@@ -2,6 +2,7 @@ package com.emendes.workouttrackerapi.resource;
 
 import com.emendes.workouttrackerapi.dto.request.UserRegisterRequest;
 import com.emendes.workouttrackerapi.service.UserService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -24,6 +25,7 @@ public class UserResource {
   private UserService userService;
 
   @POST
+  @PermitAll
   public Response register(UserRegisterRequest userRegisterRequest) {
     return Response
         .status(Status.CREATED)
