@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RoleService {
 
-  private static final String USER_ROLE_NAME = "user";
+  public static final String USER_ROLE_NAME = "user";
   private static final Integer USER_ROLE_ID = 1;
 
   /**
