@@ -7,6 +7,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
+import java.util.Optional;
+
 /**
  * DAO responsável pela interação com o recurso User no banco de dados.
  */
@@ -16,11 +18,30 @@ public class UserDao {
 
   private EntityManager entityManager;
 
+  /**
+   * Registra um usuário na base de dados.
+   */
   @Transactional
   public User register(User user) {
     entityManager.persist(user);
 
     return user;
+  }
+
+  /**
+   * Busca usuário por email.
+   *
+   * @param email parâmetro o qual o usuário será buscado.
+   * @return {@code Optional<User>} contendo o usuário encontrado, ou vazio caso nada seja encontrado.
+   */
+  @Transactional
+  public Optional<User> findByEmail(String email) {
+    User userFound = entityManager.createNamedQuery("""
+            SELECT u FROM User u WHERE u.email = :email
+            """, User.class).setParameter("email", email)
+        .getSingleResultOrNull();
+
+    return Optional.ofNullable(userFound);
   }
 
 }
