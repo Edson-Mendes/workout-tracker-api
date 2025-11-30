@@ -6,12 +6,14 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
 /**
  * DAO responsável pela interação com o recurso User no banco de dados.
  */
+@Slf4j
 @ApplicationScoped
 @AllArgsConstructor(onConstructor_ = @Inject)
 public class UserDao {
@@ -36,7 +38,8 @@ public class UserDao {
    */
   @Transactional
   public Optional<User> findByEmail(String email) {
-    User userFound = entityManager.createNamedQuery("""
+    log.info("Buscando usuário por email: {}", email);
+    User userFound = entityManager.createQuery("""
             SELECT u FROM User u WHERE u.email = :email
             """, User.class).setParameter("email", email)
         .getSingleResultOrNull();

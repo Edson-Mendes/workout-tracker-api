@@ -8,7 +8,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,7 +44,7 @@ public class ConstraintViolationExceptionHandler implements ExceptionMapper<Cons
         .title(Response.Status.BAD_REQUEST.name())
         .description("Some fields are invalid")
         .status(Response.Status.BAD_REQUEST.getStatusCode())
-        .timestamp(LocalDate.now())
+        .timestamp(LocalDateTime.now())
         .others(map)
         .build();
   }

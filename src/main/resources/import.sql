@@ -10,7 +10,7 @@ INSERT INTO tb_role(name) VALUES
     ('user'),
     ('admin');
 
--- Insere usuário.
+-- Insere usuário (senha 123456).
 INSERT INTO tb_user(email, password) VALUES
     ('user@email.com', '$2a$10$2nkWFNOg.dQwNQeB99/Fd.o.0zwCBBG0WDxbfhY2X5k2eLHx4BA9q');
 
