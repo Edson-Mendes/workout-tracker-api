@@ -3,7 +3,7 @@ package com.emendes.workouttrackerapi.dto.response;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import lombok.Builder;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -14,7 +14,7 @@ public record ProblemDetailResponse(
     String title,
     String description,
     int status,
-    LocalDate timestamp,
+    LocalDateTime timestamp,
     @JsonAnyGetter
     Map<String, Object> others
 ) {

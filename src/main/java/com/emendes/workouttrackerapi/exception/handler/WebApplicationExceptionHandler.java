@@ -6,7 +6,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Classe para lidar com a exception {@code WebApplicationException}.
@@ -28,7 +28,7 @@ public class WebApplicationExceptionHandler implements ExceptionMapper<WebApplic
         .title(Response.Status.fromStatusCode(statusCode).name())
         .description(exception.getMessage())
         .status(statusCode)
-        .timestamp(LocalDate.now())
+        .timestamp(LocalDateTime.now())
         .build();
   }
 
