@@ -1,45 +1,40 @@
 package com.emendes.workouttrackerapi.model.entity;
 
-import com.emendes.workouttrackerapi.model.WorkoutStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 /**
- * Entidade que representa a tabela tb_workout do banco de dados.
+ * Entidade que representa a tabela tb_exercise do banco de dados.
  */
 @Entity
-@Table(name = "tb_workout")
+@Table(name = "tb_exercise")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class Workout {
+public class Exercise {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   @Column(nullable = false)
   private String name;
-  @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  private WorkoutStatus status;
+  private int sets;
+  @Column(nullable = false)
+  private BigDecimal weight;
   @ManyToOne(cascade = CascadeType.REMOVE)
-  private User user;
-
-  public Workout(Long id, String name, WorkoutStatus status, Long userId) {
-    this.id = id;
-    this.name = name;
-    this.status = status;
-    this.user = new User.UserBuilder().id(userId).build();
-  }
+  private Workout workout;
 
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
 
-    Workout workout = (Workout) o;
-    return id.equals(workout.id);
+    Exercise exercise = (Exercise) o;
+    return id.equals(exercise.id);
   }
 
   @Override
@@ -49,10 +44,12 @@ public class Workout {
 
   @Override
   public String toString() {
-    return "Workout{" +
+    return "Exercise{" +
            "id=" + id +
            ", name='" + name + '\'' +
-           ", status=" + status +
+           ", sets=" + sets +
+           ", weight=" + weight +
            '}';
   }
+
 }
