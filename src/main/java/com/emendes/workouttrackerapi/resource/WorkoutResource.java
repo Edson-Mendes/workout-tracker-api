@@ -1,5 +1,6 @@
 package com.emendes.workouttrackerapi.resource;
 
+import com.emendes.workouttrackerapi.dto.request.ExerciseRegisterRequest;
 import com.emendes.workouttrackerapi.dto.request.WorkoutRegisterRequest;
 import com.emendes.workouttrackerapi.service.WorkoutService;
 import jakarta.annotation.security.RolesAllowed;
@@ -22,12 +23,41 @@ public class WorkoutResource {
 
   private WorkoutService workoutService;
 
+  /**
+   * Endpoint para registrar workout.
+   */
   @POST
   @RolesAllowed({USER_ROLE_NAME})
-  public Response register(WorkoutRegisterRequest workoutRegisterRequest) {
+  public Response registerWorkout(WorkoutRegisterRequest workoutRegisterRequest) {
     return Response
         .status(Response.Status.CREATED)
-        .entity(workoutService.register(workoutRegisterRequest))
+        .entity(workoutService.registerWorkout(workoutRegisterRequest))
+        .build();
+  }
+
+  /**
+   * Endpoint para buscar Workout por ID.
+   */
+  @GET
+  @Path("/{workoutId}")
+  @RolesAllowed({USER_ROLE_NAME})
+  public Response findWorkoutById(@PathParam("workoutId") Long workoutId) {
+    return Response
+        .status(Response.Status.OK)
+        .entity(workoutService.findWorkoutById(workoutId))
+        .build();
+  }
+
+  /**
+   * Enpoint para adicionar Exercise.
+   */
+  @POST
+  @Path("/{workoutId}/exercises")
+  @RolesAllowed({USER_ROLE_NAME})
+  public Response addExercise(@PathParam("workoutId") Long workoutId, ExerciseRegisterRequest exerciseRegisterRequest) {
+    return Response
+        .status(Response.Status.CREATED)
+        .entity(workoutService.addExercise(workoutId, exerciseRegisterRequest))
         .build();
   }
 

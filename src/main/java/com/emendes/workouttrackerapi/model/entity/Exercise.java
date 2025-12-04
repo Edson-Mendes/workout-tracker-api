@@ -29,6 +29,13 @@ public class Exercise {
   @ManyToOne(cascade = CascadeType.REMOVE)
   private Workout workout;
 
+  public Exercise(Long id, String name, int sets, BigDecimal weight) {
+    this.id = id;
+    this.name = name;
+    this.sets = sets;
+    this.weight = weight;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
