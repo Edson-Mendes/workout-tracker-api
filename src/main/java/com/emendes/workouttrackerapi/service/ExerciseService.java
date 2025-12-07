@@ -2,7 +2,9 @@ package com.emendes.workouttrackerapi.service;
 
 import com.emendes.workouttrackerapi.dao.ExerciseDao;
 import com.emendes.workouttrackerapi.dto.request.ExerciseRegisterRequest;
+import com.emendes.workouttrackerapi.dto.response.ExerciseDetailsResponse;
 import com.emendes.workouttrackerapi.dto.response.ExerciseSummaryResponse;
+import com.emendes.workouttrackerapi.dto.response.WeightHistoryResponse;
 import com.emendes.workouttrackerapi.mapper.ExerciseMapper;
 import com.emendes.workouttrackerapi.model.entity.Exercise;
 import com.emendes.workouttrackerapi.model.entity.Workout;
@@ -14,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service responsável pelas regras de negócio sobre Exercise.
@@ -65,4 +68,22 @@ public class ExerciseService {
         .toList();
   }
 
+  /**
+   * Buscar Exercise por exerciseId, workoutId e userId.
+   *
+   * @param exerciseId identificador do Exercise a ser buscado.
+   * @param workoutId  identificador do Workout relacionado com o Exercise.
+   * @param userId     idenficador do User relacionado com o Workout.
+   * @return ExerciseDetailsResponse contendo informações detalhadas do Exercise encontrado.
+   */
+  public ExerciseDetailsResponse findByExerciseIdAndWorkoutIdAndUserId(Long exerciseId, Long workoutId, Long userId) {
+    log.info("Attempt to find Exercise by exerciseId, workoutId and userId");
+    Optional<Exercise> exerciseOptional = exerciseDao.findExerciseById(exerciseId, workoutId, userId);
+    if (exerciseOptional.isPresent()) {
+      List<WeightHistoryResponse> weightHistoryResponseList = weightHistoryService.fetchWeightHistoryByExerciseId(exerciseId);
+
+      return ExerciseMapper.toExerciseDetailsResponse(exerciseOptional.get(), weightHistoryResponseList);
+    }
+    throw new WebApplicationException("exercise not found", Status.NOT_FOUND);
+  }
 }
