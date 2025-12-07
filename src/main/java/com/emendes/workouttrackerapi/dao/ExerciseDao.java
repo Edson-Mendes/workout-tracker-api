@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * DAO responsável pela interação com o recurso Exercise no banco de dados.
@@ -39,4 +40,23 @@ public class ExerciseDao {
         .setParameter("workoutId", workoutId)
         .getResultList();
   }
+
+  /**
+   * Busca Exercises por workoutId.
+   */
+  public Optional<Exercise> findExerciseById(Long exerciseId, Long workoutId, Long userId) {
+    Exercise exercise = entityManager.createQuery("""
+            SELECT e.id, e.name, e.sets, e.weight FROM Exercise e
+              WHERE e.id = :exerciseId
+              AND e.workout.id = :workoutId
+              AND e.workout.user.id = :userId
+            """, Exercise.class)
+        .setParameter("exerciseId", exerciseId)
+        .setParameter("workoutId", workoutId)
+        .setParameter("userId", userId)
+        .getSingleResultOrNull();
+
+    return Optional.ofNullable(exercise);
+  }
+
 }

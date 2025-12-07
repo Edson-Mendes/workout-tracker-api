@@ -4,6 +4,7 @@ import com.emendes.workouttrackerapi.CurrentUserComponent;
 import com.emendes.workouttrackerapi.dao.WorkoutDao;
 import com.emendes.workouttrackerapi.dto.request.ExerciseRegisterRequest;
 import com.emendes.workouttrackerapi.dto.request.WorkoutRegisterRequest;
+import com.emendes.workouttrackerapi.dto.response.ExerciseDetailsResponse;
 import com.emendes.workouttrackerapi.dto.response.ExerciseSummaryResponse;
 import com.emendes.workouttrackerapi.dto.response.WorkoutDetailsResponse;
 import com.emendes.workouttrackerapi.dto.response.WorkoutSummaryResponse;
@@ -83,6 +84,24 @@ public class WorkoutService {
     log.info("Exercises found successful for workout with id: {}", workoutId);
 
     return workoutDetailsResponse;
+  }
+
+  /**
+   * Buscar Exercise por id.
+   *
+   * @param workoutId  identificador do Workout relacionado com o Exercise a ser buscado.
+   * @param exerciseId identificador do Exercise a ser buscado.
+   * @return ExerciseDetailsResponse contendo informações detalhadas do Exercise encontrado.
+   */
+  public ExerciseDetailsResponse findExerciseById(Long workoutId, Long exerciseId) {
+    log.info("Attempt to find Exercise by ID");
+    findById(workoutId);
+
+    Long userId = currentUserComponent.getCurrentUser().getId();
+    ExerciseDetailsResponse exerciseDetailsResponse = exerciseService.findByExerciseIdAndWorkoutIdAndUserId(exerciseId, workoutId, userId);
+    log.info("Exercise found successful with id: {}", exerciseId);
+
+    return exerciseDetailsResponse;
   }
 
   /**

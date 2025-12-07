@@ -1,5 +1,6 @@
 package com.emendes.workouttrackerapi.mapper;
 
+import com.emendes.workouttrackerapi.dto.response.WeightHistoryResponse;
 import com.emendes.workouttrackerapi.model.entity.Exercise;
 import com.emendes.workouttrackerapi.model.entity.WeightHistory;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -23,6 +24,20 @@ public class WeightHistoryMapper {
         .value(exercise.getWeight())
         .createdAt(LocalDateTime.now())
         .exercise(exercise)
+        .build();
+  }
+
+  /**
+   * Mapeia objeto WeightHistory para WeightHistoryResponse.
+   */
+  public WeightHistoryResponse toWeightHistoryResponse(WeightHistory weightHistory) {
+    if (weightHistory == null)
+      throw new IllegalArgumentException("weightHistory must not be null");
+
+    return WeightHistoryResponse.builder()
+        .id(weightHistory.getId())
+        .weight(weightHistory.getValue())
+        .date(weightHistory.getCreatedAt())
         .build();
   }
 

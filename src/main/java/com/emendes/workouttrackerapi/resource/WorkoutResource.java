@@ -61,4 +61,17 @@ public class WorkoutResource {
         .build();
   }
 
+  /**
+   * Endpoint para buscar Exercise por id.
+   */
+  @GET
+  @Path("/{workoutId}/exercises/{exerciseId}")
+  @RolesAllowed({USER_ROLE_NAME})
+  public Response findExerciseById(@PathParam("workoutId") Long workoutId, @PathParam("exerciseId") Long exerciseId) {
+    return Response
+        .status(Response.Status.OK)
+        .entity(workoutService.findExerciseById(workoutId, exerciseId))
+        .build();
+  }
+
 }

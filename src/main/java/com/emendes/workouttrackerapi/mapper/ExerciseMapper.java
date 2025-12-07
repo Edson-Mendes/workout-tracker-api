@@ -1,9 +1,13 @@
 package com.emendes.workouttrackerapi.mapper;
 
 import com.emendes.workouttrackerapi.dto.request.ExerciseRegisterRequest;
+import com.emendes.workouttrackerapi.dto.response.ExerciseDetailsResponse;
 import com.emendes.workouttrackerapi.dto.response.ExerciseSummaryResponse;
+import com.emendes.workouttrackerapi.dto.response.WeightHistoryResponse;
 import com.emendes.workouttrackerapi.model.entity.Exercise;
 import jakarta.enterprise.context.ApplicationScoped;
+
+import java.util.List;
 
 /**
  * Mapper responsável pelo mapeamento de classes relacionadas a Exercise.
@@ -37,6 +41,24 @@ public class ExerciseMapper {
         .name(exercise.getName())
         .sets(exercise.getSets())
         .weight(exercise.getWeight())
+        .build();
+  }
+
+  /**
+   * Mapeia objeto Exercise para ExerciseDetailsResponse.
+   */
+  public static ExerciseDetailsResponse toExerciseDetailsResponse(Exercise exercise, List<WeightHistoryResponse> weightHistoryResponseList) {
+    if (exercise == null)
+      throw new IllegalArgumentException("exercise must not be null");
+    if (weightHistoryResponseList == null)
+      throw new IllegalArgumentException("weightHistoryResponseList must not be null");
+
+    return ExerciseDetailsResponse.builder()
+        .id(exercise.getId())
+        .name(exercise.getName())
+        .sets(exercise.getSets())
+        .currentWeight(exercise.getWeight())
+        .weightHistory(weightHistoryResponseList)
         .build();
   }
 

@@ -28,6 +28,12 @@ public class WeightHistory {
   @ManyToOne
   private Exercise exercise;
 
+  public WeightHistory(Long id, BigDecimal value, LocalDateTime createdAt) {
+    this.id = id;
+    this.value = value;
+    this.createdAt = createdAt;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
