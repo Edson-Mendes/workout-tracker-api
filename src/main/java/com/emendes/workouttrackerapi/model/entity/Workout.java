@@ -4,6 +4,8 @@ import com.emendes.workouttrackerapi.model.WorkoutStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 /**
  * Entidade que representa a tabela tb_workout do banco de dados.
  */
@@ -24,8 +26,10 @@ public class Workout {
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private WorkoutStatus status;
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @ManyToOne(fetch = FetchType.LAZY)
   private User user;
+  @OneToMany(mappedBy = "workout", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+  private List<Exercise> exercises;
 
   public Workout(Long id, String name, WorkoutStatus status, Long userId) {
     this.id = id;

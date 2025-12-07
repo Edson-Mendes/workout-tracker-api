@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Entidade que representa a tabela tb_exercise do banco de dados.
@@ -26,8 +27,10 @@ public class Exercise {
   private int sets;
   @Column(nullable = false)
   private BigDecimal weight;
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @ManyToOne(fetch = FetchType.LAZY)
   private Workout workout;
+  @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+  private List<WeightHistory> weightHistories;
 
   public Exercise(Long id, String name, int sets, BigDecimal weight) {
     this.id = id;
