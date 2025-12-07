@@ -25,6 +25,7 @@ public class ExerciseService {
 
   private ExerciseDao exerciseDao;
   private ExerciseMapper exerciseMapper;
+  private WeightHistoryService weightHistoryService;
 
   /**
    * Registra um exercise no sistema.
@@ -43,6 +44,7 @@ public class ExerciseService {
     Exercise exercise = exerciseMapper.toExercise(exerciseRegisterRequest);
     exercise.setWorkout(workout);
     exercise = exerciseDao.register(exercise);
+    weightHistoryService.save(exercise);
 
     log.info("Exercise registered successful with id {}", exercise.getId());
     return exerciseMapper.toExerciseSummaryResponse(exercise);

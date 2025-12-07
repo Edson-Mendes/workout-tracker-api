@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,13 +34,15 @@ public class User {
   @Column(nullable = false)
   private String password;
   @Roles
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
   @JoinTable(
       name = "tb_user_roles",
       joinColumns = @JoinColumn(name = "user_id", nullable = false),
       inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false)
   )
   private Set<Role> roles;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+  private List<Workout> workouts;
 
   @Override
   public boolean equals(Object o) {

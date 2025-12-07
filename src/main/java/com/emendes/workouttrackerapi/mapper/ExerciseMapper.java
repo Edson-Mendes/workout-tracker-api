@@ -16,7 +16,7 @@ public class ExerciseMapper {
    */
   public Exercise toExercise(ExerciseRegisterRequest exerciseRegisterRequest) {
     if (exerciseRegisterRequest == null)
-      throw new IllegalArgumentException("exerciseRegisterRequest must not be null");
+      throw new IllegalArgumentException("exercise must not be null");
 
     return Exercise.builder()
         .name(exerciseRegisterRequest.name())
