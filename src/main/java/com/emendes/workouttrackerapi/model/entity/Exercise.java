@@ -32,6 +32,13 @@ public class Exercise {
   @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
   private List<WeightHistory> weightHistories;
 
+  public Exercise(Long id, String name, int sets, BigDecimal weight, Long workoutId) {
+    this(id, name, sets, weight);
+    this.workout = new Workout.WorkoutBuilder()
+        .id(workoutId)
+        .build();
+  }
+
   public Exercise(Long id, String name, int sets, BigDecimal weight) {
     this.id = id;
     this.name = name;

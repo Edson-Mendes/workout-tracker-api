@@ -10,13 +10,13 @@ import com.emendes.workouttrackerapi.model.entity.Exercise;
 import com.emendes.workouttrackerapi.model.entity.Workout;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service responsável pelas regras de negócio sobre Exercise.
@@ -78,12 +78,38 @@ public class ExerciseService {
    */
   public ExerciseDetailsResponse findByExerciseIdAndWorkoutIdAndUserId(Long exerciseId, Long workoutId, Long userId) {
     log.info("Attempt to find Exercise by exerciseId, workoutId and userId");
-    Optional<Exercise> exerciseOptional = exerciseDao.findExerciseById(exerciseId, workoutId, userId);
-    if (exerciseOptional.isPresent()) {
-      List<WeightHistoryResponse> weightHistoryResponseList = weightHistoryService.fetchWeightHistoryByExerciseId(exerciseId);
+    Exercise exercise = findExerciseBy(exerciseId, workoutId, userId);
+    List<WeightHistoryResponse> weightHistoryResponseList = weightHistoryService.fetchWeightHistoryByExerciseId(exerciseId);
 
-      return ExerciseMapper.toExerciseDetailsResponse(exerciseOptional.get(), weightHistoryResponseList);
-    }
-    throw new WebApplicationException("exercise not found", Status.NOT_FOUND);
+    return ExerciseMapper.toExerciseDetailsResponse(exercise, weightHistoryResponseList);
   }
+
+  /**
+   * Atualizar Exercise por exerciseId, workoutId e userId.
+   *
+   * @param exerciseId              identificador do Exercise a ser atualizado.
+   * @param workoutId               identificador do Workout relacionado com o Exercise.
+   * @param userId                  idenficador do User relacionado com o Workout.
+   * @param exerciseRegisterRequest objeto contendo as informações do exercise.
+   * @return ExerciseDetailsResponse contendo informações detalhadas do Exercise encontrado.
+   */
+  public ExerciseSummaryResponse updateExercise(Long exerciseId, Long workoutId, Long userId, @Valid ExerciseRegisterRequest exerciseRegisterRequest) {
+    log.info("Attempt to update Exercise by ID: {}", exerciseId);
+    Exercise exercise = findExerciseBy(exerciseId, workoutId, userId);
+    exerciseMapper.merge(exercise, exerciseRegisterRequest);
+
+    exerciseDao.update(exercise);
+    weightHistoryService.save(exercise);
+    log.info("Exercise updated successful");
+    return exerciseMapper.toExerciseSummaryResponse(exercise);
+  }
+
+  /**
+   * Busca Exercise na camada DAO.
+   */
+  private Exercise findExerciseBy(Long exerciseId, Long workoutId, Long userId) {
+    return exerciseDao.findExerciseById(exerciseId, workoutId, userId)
+        .orElseThrow(() -> new WebApplicationException("exercise not found", Status.NOT_FOUND));
+  }
+
 }

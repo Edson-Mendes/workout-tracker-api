@@ -74,4 +74,20 @@ public class WorkoutResource {
         .build();
   }
 
+  /**
+   * Enpoint para atualizar Exercise.
+   */
+  @PUT
+  @Path("/{workoutId}/exercises/{exerciseId}")
+  @RolesAllowed({USER_ROLE_NAME})
+  public Response updateExercise(
+      @PathParam("workoutId") Long workoutId,
+      @PathParam("exerciseId") Long exerciseId,
+      ExerciseRegisterRequest exerciseRegisterRequest) {
+    return Response
+        .status(Response.Status.OK)
+        .entity(workoutService.updateExercise(workoutId, exerciseId, exerciseRegisterRequest))
+        .build();
+  }
+
 }
