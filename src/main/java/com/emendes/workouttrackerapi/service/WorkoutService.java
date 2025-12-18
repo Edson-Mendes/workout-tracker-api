@@ -95,13 +95,31 @@ public class WorkoutService {
    */
   public ExerciseDetailsResponse findExerciseById(Long workoutId, Long exerciseId) {
     log.info("Attempt to find Exercise by ID");
-    findById(workoutId);
+    checkWorkoutId(workoutId);
+    checkExerciseId(exerciseId);
 
     Long userId = currentUserComponent.getCurrentUser().getId();
     ExerciseDetailsResponse exerciseDetailsResponse = exerciseService.findByExerciseIdAndWorkoutIdAndUserId(exerciseId, workoutId, userId);
     log.info("Exercise found successful with id: {}", exerciseId);
 
     return exerciseDetailsResponse;
+  }
+
+  /**
+   * Atualizar Exercise por id.
+   *
+   * @param workoutId               identificador do Workout relacionado com o Exercise a ser atualizado.
+   * @param exerciseId              identificador do Exercise a ser atualizado.
+   * @param exerciseRegisterRequest com as informações a serem atualizadas do Exercise.
+   * @return {@code ExerciseSummaryResponse} Contendo informações resumidas do Exercise.
+   */
+  public ExerciseSummaryResponse updateExercise(Long workoutId, Long exerciseId, ExerciseRegisterRequest exerciseRegisterRequest) {
+    log.info("Attempt to update Exercise by ID");
+    checkWorkoutId(workoutId);
+    checkExerciseId(exerciseId);
+
+    Long userId = currentUserComponent.getCurrentUser().getId();
+    return exerciseService.updateExercise(exerciseId, workoutId, userId, exerciseRegisterRequest);
   }
 
   /**
@@ -113,12 +131,33 @@ public class WorkoutService {
    */
   private Workout findById(Long workoutId) {
     log.info("Attempt to find workout with id {}", workoutId);
-    if (workoutId == null)
-      throw new WebApplicationException("workoutId must not be null", Status.INTERNAL_SERVER_ERROR);
+    checkWorkoutId(workoutId);
 
     Long userId = currentUserComponent.getCurrentUser().getId();
     return workoutDao.findByIdAndStatusAndUserId(workoutId, WorkoutStatus.ONGOING, userId)
         .orElseThrow(() -> new WebApplicationException("workout not found", Status.NOT_FOUND));
+  }
+
+  /**
+   * Verifica se o workoutId informado é nulo.
+   *
+   * @param workoutId identificador do workout.
+   * @throws WebApplicationException caso workoutId seja nulo.
+   */
+  private void checkWorkoutId(Long workoutId) {
+    if (workoutId == null)
+      throw new WebApplicationException("workoutId must not be null", Status.INTERNAL_SERVER_ERROR);
+  }
+
+  /**
+   * Verifica se o exerciseId informado é nulo.
+   *
+   * @param exerciseId identificador do workout.
+   * @throws WebApplicationException caso exerciseId seja nulo.
+   */
+  private void checkExerciseId(Long exerciseId) {
+    if (exerciseId == null)
+      throw new WebApplicationException("exerciseId must not be null", Status.INTERNAL_SERVER_ERROR);
   }
 
 }

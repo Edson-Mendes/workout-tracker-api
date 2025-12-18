@@ -62,4 +62,17 @@ public class ExerciseMapper {
         .build();
   }
 
+  /**
+   * Mescla os dados de exercise com os dados de exerciseRegisterRequest.
+   */
+  public void merge(Exercise exercise, ExerciseRegisterRequest exerciseRegisterRequest) {
+    if (exercise == null)
+      throw new IllegalArgumentException("exercise must not be null");
+    if (exerciseRegisterRequest == null)
+      throw new IllegalArgumentException("exerciseRegisterRequest must not be null");
+
+    exercise.setName(exerciseRegisterRequest.name());
+    exercise.setSets(exerciseRegisterRequest.sets());
+    exercise.setWeight(exerciseRegisterRequest.weight());
+  }
 }

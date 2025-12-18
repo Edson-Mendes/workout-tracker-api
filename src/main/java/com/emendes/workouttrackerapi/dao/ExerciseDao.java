@@ -30,6 +30,14 @@ public class ExerciseDao {
   }
 
   /**
+   * Atualiza um Exercise na base de dados.
+   */
+  @Transactional
+  public Exercise update(Exercise exercise) {
+    return entityManager.merge(exercise);
+  }
+
+  /**
    * Busca Exercises por workoutId.
    */
   public List<Exercise> fetchExercisesByWorkoutId(Long workoutId) {
@@ -46,7 +54,7 @@ public class ExerciseDao {
    */
   public Optional<Exercise> findExerciseById(Long exerciseId, Long workoutId, Long userId) {
     Exercise exercise = entityManager.createQuery("""
-            SELECT e.id, e.name, e.sets, e.weight FROM Exercise e
+            SELECT e.id, e.name, e.sets, e.weight, e.workout.id FROM Exercise e
               WHERE e.id = :exerciseId
               AND e.workout.id = :workoutId
               AND e.workout.user.id = :userId
