@@ -1,12 +1,12 @@
 package com.emendes.workouttrackerapi.mapper;
 
 import com.emendes.workouttrackerapi.dto.request.WorkoutRegisterRequest;
+import com.emendes.workouttrackerapi.dto.request.WorkoutUpdateRequest;
 import com.emendes.workouttrackerapi.dto.response.ExerciseSummaryResponse;
 import com.emendes.workouttrackerapi.dto.response.WorkoutDetailsResponse;
 import com.emendes.workouttrackerapi.dto.response.WorkoutSummaryResponse;
 import com.emendes.workouttrackerapi.model.entity.Workout;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class WorkoutMapper {
   /**
    * Mepeia um objeto workoutRegisterRequest para Workout.
    */
-  public Workout toWorkout(@Valid WorkoutRegisterRequest workoutRegisterRequest) {
+  public Workout toWorkout(WorkoutRegisterRequest workoutRegisterRequest) {
     if (workoutRegisterRequest == null)
       throw new IllegalArgumentException("workoutRegisterRequest must not be null");
 
@@ -58,6 +58,19 @@ public class WorkoutMapper {
         .status(workout.getStatus())
         .exercises(exercises)
         .build();
+  }
+
+  /**
+   * Mescla os dados de {@code WorkoutUpdateRequest} com {@code Workout}.
+   */
+  public void merge(WorkoutUpdateRequest workoutUpdateRequest, Workout workout) {
+    if (workoutUpdateRequest == null)
+      throw new IllegalArgumentException("workoutUpdateRequest must not be null");
+    if (workout == null)
+      throw new IllegalArgumentException("workout must not be null");
+
+    workout.setName(workoutUpdateRequest.name());
+    workout.setStatus(workoutUpdateRequest.getStatus());
   }
 
 }

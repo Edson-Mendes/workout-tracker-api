@@ -2,6 +2,7 @@ package com.emendes.workouttrackerapi.resource;
 
 import com.emendes.workouttrackerapi.dto.request.ExerciseRegisterRequest;
 import com.emendes.workouttrackerapi.dto.request.WorkoutRegisterRequest;
+import com.emendes.workouttrackerapi.dto.request.WorkoutUpdateRequest;
 import com.emendes.workouttrackerapi.service.WorkoutService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -45,6 +46,19 @@ public class WorkoutResource {
     return Response
         .status(Response.Status.OK)
         .entity(workoutService.findWorkoutById(workoutId))
+        .build();
+  }
+
+  /**
+   * Endpoint para atualizar Workout por ID.
+   */
+  @PUT
+  @Path("/{workoutId}")
+  @RolesAllowed({USER_ROLE_NAME})
+  public Response updateWorkoutById(@PathParam("workoutId") Long workoutId, WorkoutUpdateRequest workoutUpdateRequest) {
+    return Response
+        .status(Response.Status.OK)
+        .entity(workoutService.updateWorkoutById(workoutId, workoutUpdateRequest))
         .build();
   }
 

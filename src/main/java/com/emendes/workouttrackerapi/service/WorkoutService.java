@@ -4,6 +4,7 @@ import com.emendes.workouttrackerapi.CurrentUserComponent;
 import com.emendes.workouttrackerapi.dao.WorkoutDao;
 import com.emendes.workouttrackerapi.dto.request.ExerciseRegisterRequest;
 import com.emendes.workouttrackerapi.dto.request.WorkoutRegisterRequest;
+import com.emendes.workouttrackerapi.dto.request.WorkoutUpdateRequest;
 import com.emendes.workouttrackerapi.dto.response.ExerciseDetailsResponse;
 import com.emendes.workouttrackerapi.dto.response.ExerciseSummaryResponse;
 import com.emendes.workouttrackerapi.dto.response.WorkoutDetailsResponse;
@@ -87,6 +88,25 @@ public class WorkoutService {
   }
 
   /**
+   * Atualiza Workout por id.
+   *
+   * @param workoutId            identificador do Workout a ser atualizado.
+   * @param workoutUpdateRequest com as novas informações do Workout.
+   * @return {@code WorkoutSummaryResponse} com informações resumidas do Workout.
+   */
+  public WorkoutSummaryResponse updateWorkoutById(Long workoutId, @Valid WorkoutUpdateRequest workoutUpdateRequest) {
+    log.info("Attempt to update workout with id {}", workoutId);
+    checkWorkoutId(workoutId);
+
+    Workout workout = findByIdAndUserId(workoutId);
+    workoutMapper.merge(workoutUpdateRequest, workout);
+    workout = workoutDao.update(workout);
+
+    log.info("Workout updated successful");
+    return workoutMapper.toWorkoutSummaryResponse(workout);
+  }
+
+  /**
    * Buscar Exercise por id.
    *
    * @param workoutId  identificador do Workout relacionado com o Exercise a ser buscado.
@@ -123,7 +143,7 @@ public class WorkoutService {
   }
 
   /**
-   * Busca workout por id.
+   * Busca workout por id, WorkoutStatus.ONGOING e userId.
    *
    * @param workoutId identificador do Workout a ser buscado.
    * @return Workout encontrado para o dado workoutId.
@@ -135,6 +155,22 @@ public class WorkoutService {
 
     Long userId = currentUserComponent.getCurrentUser().getId();
     return workoutDao.findByIdAndStatusAndUserId(workoutId, WorkoutStatus.ONGOING, userId)
+        .orElseThrow(() -> new WebApplicationException("workout not found", Status.NOT_FOUND));
+  }
+
+  /**
+   * Busca workout por id e userId.
+   *
+   * @param workoutId identificador do Workout a ser buscado.
+   * @return Workout encontrado para o dado workoutId.
+   * @throws WebApplicationException caso não seja encontrado Workout para o dado workoutId.
+   */
+  private Workout findByIdAndUserId(Long workoutId) {
+    log.info("Attempt to search workout with id {}", workoutId);
+    checkWorkoutId(workoutId);
+
+    Long userId = currentUserComponent.getCurrentUser().getId();
+    return workoutDao.findByIdAndUserId(workoutId, userId)
         .orElseThrow(() -> new WebApplicationException("workout not found", Status.NOT_FOUND));
   }
 
