@@ -30,6 +30,14 @@ public class WorkoutDao {
   }
 
   /**
+   * Atualiza um Workout na base de dados.
+   */
+  @Transactional
+  public Workout update(Workout workout) {
+    return entityManager.merge(workout);
+  }
+
+  /**
    * Busca Wokrout por id, status e userId.
    *
    * @param workoutId identificador do workout.
@@ -46,6 +54,26 @@ public class WorkoutDao {
             """, Workout.class)
         .setParameter("workoutId", workoutId)
         .setParameter("status", status)
+        .setParameter("userId", userId)
+        .getSingleResultOrNull();
+
+    return Optional.ofNullable(workoutFound);
+  }
+
+  /**
+   * Busca Wokrout por id e userId.
+   *
+   * @param workoutId identificador do workout.
+   * @param userId    identificador do usuário dono do workout.
+   * @return {@code Optional<Workout>} contendo o workout encontrado, empty caso contrário.
+   */
+  public Optional<Workout> findByIdAndUserId(Long workoutId, Long userId) {
+    Workout workoutFound = entityManager.createQuery("""
+            SELECT w.id, w.name, w.status, w.user.id FROM Workout w
+              WHERE w.id = :workoutId
+              AND w.user.id = :userId
+            """, Workout.class)
+        .setParameter("workoutId", workoutId)
         .setParameter("userId", userId)
         .getSingleResultOrNull();
 
