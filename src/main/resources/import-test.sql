@@ -20,7 +20,8 @@ INSERT INTO tb_user_roles(user_id, role_id) VALUES
 
 -- Insere workout para o usuário acima
 INSERT INTO tb_workout(name, status, user_id) VALUES
-    ('Leg day', 'ONGOING', 1);
+    ('Leg day', 'ONGOING', 1),
+    ('Antigo Leg day', 'FINISHED', 1);
 
 -- Insere exercises para o workout acima
 INSERT INTO tb_exercise(name, sets, weight, workout_id) VALUES
