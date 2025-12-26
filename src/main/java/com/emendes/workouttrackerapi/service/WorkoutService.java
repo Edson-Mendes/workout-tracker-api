@@ -136,30 +136,18 @@ public class WorkoutService {
    * @param exerciseRegisterRequest com as informações a serem atualizadas do Exercise.
    * @return {@code ExerciseSummaryResponse} Contendo informações resumidas do Exercise.
    */
-  public ExerciseSummaryResponse updateExercise(Long workoutId, Long exerciseId, ExerciseRegisterRequest exerciseRegisterRequest) {
+  public ExerciseSummaryResponse updateExercise(Long workoutId, Long exerciseId, @Valid ExerciseRegisterRequest exerciseRegisterRequest) {
     log.info("Attempt to update Exercise by ID");
     checkWorkoutId(workoutId);
     checkExerciseId(exerciseId);
 
-    Long userId = currentUserComponent.getCurrentUser().getId();
-    return exerciseService.updateExercise(exerciseId, workoutId, userId, exerciseRegisterRequest);
-  }
+    Workout workout = findById(workoutId);
+    if (workout.getStatus().equals(WorkoutStatus.FINISHED)) {
+      throw new WebApplicationException("It is not possible to update exercise in a FINISHED workout.", Status.BAD_REQUEST);
+    }
 
-//  /**
-//   * Busca workout por id, WorkoutStatus.ONGOING e userId.
-//   *
-//   * @param workoutId identificador do Workout a ser buscado.
-//   * @return Workout encontrado para o dado workoutId.
-//   * @throws WebApplicationException caso não seja encontrado Workout para o dado workoutId.
-//   */
-//  private Workout findById(Long workoutId) {
-//    log.info("Attempt to find workout with id {}", workoutId);
-//    checkWorkoutId(workoutId);
-//
-//    Long userId = currentUserComponent.getCurrentUser().getId();
-//    return workoutDao.findByIdAndStatusAndUserId(workoutId, WorkoutStatus.ONGOING, userId)
-//        .orElseThrow(() -> new WebApplicationException("workout not found", Status.NOT_FOUND));
-//  }
+    return exerciseService.updateExercise(exerciseId, workout, exerciseRegisterRequest);
+  }
 
   /**
    * Busca workout por id e userId.

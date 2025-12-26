@@ -17,6 +17,7 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor_ = @Inject)
 public class ExerciseDao {
 
+  public static final String WORKOUT_ID_PARAM = "workoutId";
   private EntityManager entityManager;
 
   /**
@@ -45,12 +46,12 @@ public class ExerciseDao {
             SELECT e.id, e.name, e.sets, e.weight FROM Exercise e
               WHERE e.workout.id = :workoutId
             """, Exercise.class)
-        .setParameter("workoutId", workoutId)
+        .setParameter(WORKOUT_ID_PARAM, workoutId)
         .getResultList();
   }
 
   /**
-   * Busca Exercises por workoutId.
+   * Busca Exercise por exerciseId, workoutId e userId.
    */
   public Optional<Exercise> findExerciseById(Long exerciseId, Long workoutId, Long userId) {
     Exercise exercise = entityManager.createQuery("""
@@ -60,8 +61,24 @@ public class ExerciseDao {
               AND e.workout.user.id = :userId
             """, Exercise.class)
         .setParameter("exerciseId", exerciseId)
-        .setParameter("workoutId", workoutId)
+        .setParameter(WORKOUT_ID_PARAM, workoutId)
         .setParameter("userId", userId)
+        .getSingleResultOrNull();
+
+    return Optional.ofNullable(exercise);
+  }
+
+  /**
+   * Busca Exercises por exerciseId e workoutId.
+   */
+  public Optional<Exercise> findExerciseById(Long exerciseId, Long workoutId) {
+    Exercise exercise = entityManager.createQuery("""
+            SELECT e.id, e.name, e.sets, e.weight, e.workout.id FROM Exercise e
+              WHERE e.id = :exerciseId
+              AND e.workout.id = :workoutId
+            """, Exercise.class)
+        .setParameter("exerciseId", exerciseId)
+        .setParameter(WORKOUT_ID_PARAM, workoutId)
         .getSingleResultOrNull();
 
     return Optional.ofNullable(exercise);

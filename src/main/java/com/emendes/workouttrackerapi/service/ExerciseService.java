@@ -10,7 +10,6 @@ import com.emendes.workouttrackerapi.model.entity.Exercise;
 import com.emendes.workouttrackerapi.model.entity.Workout;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
 import lombok.AllArgsConstructor;
@@ -93,9 +92,11 @@ public class ExerciseService {
    * @param exerciseRegisterRequest objeto contendo as informações do exercise.
    * @return ExerciseDetailsResponse contendo informações detalhadas do Exercise encontrado.
    */
-  public ExerciseSummaryResponse updateExercise(Long exerciseId, Long workoutId, Long userId, @Valid ExerciseRegisterRequest exerciseRegisterRequest) {
+  public ExerciseSummaryResponse updateExercise(
+      Long exerciseId, Workout workout,
+      ExerciseRegisterRequest exerciseRegisterRequest) {
     log.info("Attempt to update Exercise by ID: {}", exerciseId);
-    Exercise exercise = findExerciseBy(exerciseId, workoutId, userId);
+    Exercise exercise = findExerciseBy(exerciseId, workout.getId());
     exerciseMapper.merge(exercise, exerciseRegisterRequest);
 
     exerciseDao.update(exercise);
@@ -105,10 +106,18 @@ public class ExerciseService {
   }
 
   /**
-   * Busca Exercise na camada DAO.
+   * Busca Exercise na camada DAO por exerciseId, workoutId e userId.
    */
   private Exercise findExerciseBy(Long exerciseId, Long workoutId, Long userId) {
     return exerciseDao.findExerciseById(exerciseId, workoutId, userId)
+        .orElseThrow(() -> new WebApplicationException("exercise not found", Status.NOT_FOUND));
+  }
+
+  /**
+   * Busca Exercise na camada DAO por exerciseId, workoutId.
+   */
+  private Exercise findExerciseBy(Long exerciseId, Long workoutId) {
+    return exerciseDao.findExerciseById(exerciseId, workoutId)
         .orElseThrow(() -> new WebApplicationException("exercise not found", Status.NOT_FOUND));
   }
 
