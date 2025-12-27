@@ -5,10 +5,7 @@ import com.emendes.workouttrackerapi.dao.WorkoutDao;
 import com.emendes.workouttrackerapi.dto.request.ExerciseRegisterRequest;
 import com.emendes.workouttrackerapi.dto.request.WorkoutRegisterRequest;
 import com.emendes.workouttrackerapi.dto.request.WorkoutUpdateRequest;
-import com.emendes.workouttrackerapi.dto.response.ExerciseDetailsResponse;
-import com.emendes.workouttrackerapi.dto.response.ExerciseSummaryResponse;
-import com.emendes.workouttrackerapi.dto.response.WorkoutDetailsResponse;
-import com.emendes.workouttrackerapi.dto.response.WorkoutSummaryResponse;
+import com.emendes.workouttrackerapi.dto.response.*;
 import com.emendes.workouttrackerapi.mapper.WorkoutMapper;
 import com.emendes.workouttrackerapi.model.WorkoutStatus;
 import com.emendes.workouttrackerapi.model.entity.User;
@@ -52,6 +49,21 @@ public class WorkoutService {
     log.info("Workout registered successful");
 
     return workoutMapper.toWorkoutSummaryResponse(workout);
+  }
+
+  /**
+   * Busca todos os Workouts do usuário.
+   *
+   * @param status status que os Workouts devem ter, pode ser null ou vazio.
+   * @return {@code PageResponse<WorkoutSummaryResponse>} objeto com os workouts encontrados.
+   */
+  public PageResponse<WorkoutSummaryResponse> fetchWorkouts(String status, int page) {
+    log.info("Attempt to fetch workouts");
+    Long userId = currentUserComponent.getCurrentUser().getId();
+    if (status == null || status.isEmpty()) {
+      return fetchWorkoutsByUserId(userId, page);
+    }
+    return fetchWorkoutsByStatusAndUserId(WorkoutStatus.valueOf(status), userId, page);
   }
 
   /**
@@ -163,6 +175,74 @@ public class WorkoutService {
     Long userId = currentUserComponent.getCurrentUser().getId();
     return workoutDao.findByIdAndUserId(workoutId, userId)
         .orElseThrow(() -> new WebApplicationException("workout not found", Status.NOT_FOUND));
+  }
+
+  /**
+   * Busca paginada de Workout por userId.
+   *
+   * @param userId identificador do usuário.
+   * @param page   página a ser buscada.
+   * @return {@code PageResponse<WorkoutSummaryResponse>} wrapper com os workouts encontrados.
+   */
+  private PageResponse<WorkoutSummaryResponse> fetchWorkoutsByUserId(Long userId, int page) {
+    log.info("Attempt to fetch workouts with userId: {}", userId);
+    int limit = 10;
+    int offset = limit * page;
+    List<WorkoutSummaryResponse> content = workoutDao.fetchByUserId(userId, limit, offset)
+        .stream().map(workoutMapper::toWorkoutSummaryResponse).toList();
+
+    long totalElements = workoutDao.countByUserId(userId);
+    int totalPages = calculateTotalPages(totalElements, limit);
+
+    log.info("Fetch workouts successfully by userId");
+    return PageResponse.<WorkoutSummaryResponse>builder()
+        .content(content)
+        .currentPage(page)
+        .totalElements(totalElements)
+        .totalPages(totalPages)
+        .pageSize(limit)
+        .build();
+  }
+
+  /**
+   * Busca paginada de Workout por status e userId.
+   *
+   * @param status status que o workout deve ter.
+   * @param userId identificador do usuário.
+   * @param page   página a ser buscada.
+   * @return {@code PageResponse<WorkoutSummaryResponse>} wrapper com os workouts encontrados.
+   */
+  private PageResponse<WorkoutSummaryResponse> fetchWorkoutsByStatusAndUserId(WorkoutStatus status, Long userId, int page) {
+    log.info("Attempt to fetch workouts with userId: {} and status {}", userId, status);
+    int limit = 10;
+    int offset = limit * page;
+    List<WorkoutSummaryResponse> content = workoutDao.fetchByUserIdAndStatus(userId, status, limit, offset)
+        .stream().map(workoutMapper::toWorkoutSummaryResponse).toList();
+
+    long totalElements = workoutDao.countByUserIdAndStatus(userId, status);
+    int totalPages = calculateTotalPages(totalElements, limit);
+    log.info("Fetch workouts successfully by userId and status");
+    return PageResponse.<WorkoutSummaryResponse>builder()
+        .content(content)
+        .currentPage(page)
+        .totalElements(totalElements)
+        .totalPages(totalPages)
+        .pageSize(limit)
+        .build();
+  }
+
+  /**
+   * Calcula a quantidade de páginas.
+   *
+   * @param totalElements quantidade total de elementos.
+   * @param pageSize      tamanho da página.
+   * @return o número total de páginas.
+   */
+  private int calculateTotalPages(long totalElements, int pageSize) {
+    int totalPages = (int) (totalElements / pageSize);
+    if (totalElements % pageSize != 0)
+      totalPages++;
+    return totalPages;
   }
 
   /**
