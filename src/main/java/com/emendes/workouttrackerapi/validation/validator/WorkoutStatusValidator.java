@@ -12,7 +12,7 @@ public class WorkoutStatusValidator implements ConstraintValidator<WorkoutStatus
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
-    if (value == null) return true;
+    if (value == null || value.isEmpty()) return true;
     try {
       WorkoutStatus.valueOf(value);
       return true;

@@ -4,8 +4,10 @@ import com.emendes.workouttrackerapi.dto.request.ExerciseRegisterRequest;
 import com.emendes.workouttrackerapi.dto.request.WorkoutRegisterRequest;
 import com.emendes.workouttrackerapi.dto.request.WorkoutUpdateRequest;
 import com.emendes.workouttrackerapi.service.WorkoutService;
+import com.emendes.workouttrackerapi.validation.annotation.WorkoutStatusValidation;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -33,6 +35,20 @@ public class WorkoutResource {
     return Response
         .status(Response.Status.CREATED)
         .entity(workoutService.registerWorkout(workoutRegisterRequest))
+        .build();
+  }
+
+  /**
+   * Endpoint para buscar workouts.
+   */
+  @GET
+  @RolesAllowed({USER_ROLE_NAME})
+  public Response fetchWorkouts(
+      @WorkoutStatusValidation @QueryParam("status") String status,
+      @PositiveOrZero(message = "page must be positive or zero") @QueryParam("page") int page) {
+    return Response
+        .status(Response.Status.OK)
+        .entity(workoutService.fetchWorkouts(status, page))
         .build();
   }
 
