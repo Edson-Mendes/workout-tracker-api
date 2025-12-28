@@ -79,6 +79,20 @@ public class WorkoutResource {
   }
 
   /**
+   * Endpoint para deletar Workout por ID.
+   */
+  @DELETE
+  @Path("/{workoutId}")
+  @RolesAllowed({USER_ROLE_NAME})
+  public Response deleteWorkoutById(@PathParam("workoutId") Long workoutId) {
+    workoutService.deleteWorkoutById(workoutId);
+
+    return Response
+        .status(Response.Status.NO_CONTENT)
+        .build();
+  }
+
+  /**
    * Enpoint para adicionar Exercise.
    */
   @POST

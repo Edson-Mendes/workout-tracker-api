@@ -67,6 +67,19 @@ public class WorkoutService {
   }
 
   /**
+   * Deleta workout por id.
+   *
+   * @param workoutId identificador do Workout.
+   */
+  public void deleteWorkoutById(Long workoutId) {
+    log.info("Attempt to delete Workout with id: {}", workoutId);
+
+    Workout workout = findById(workoutId);
+    workoutDao.delete(workout);
+    log.info("Workout delete successful");
+  }
+
+  /**
    * Adiciona um exercício ao workout.
    *
    * @param workoutId               identificador do workout
