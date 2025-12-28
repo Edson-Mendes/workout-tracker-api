@@ -20,13 +20,22 @@ INSERT INTO tb_user_roles(user_id, role_id) VALUES
 
 -- Insere workout para o usuário acima
 INSERT INTO tb_workout(name, status, user_id) VALUES
-    ('Leg day', 'ONGOING', 1);
+    ('Leg day', 'ONGOING', 1),
+    ('Costas day', 'ONGOING', 1);
 
 -- Insere exercises para o workout acima
 INSERT INTO tb_exercise(name, sets, weight, workout_id) VALUES
     ('Agachamento livre', 4, 30, 1),
-    ('Cadeira extensora', 4, 60, 1);
+    ('Cadeira extensora', 4, 60, 1),
+    ('Leg press 45', 4, 80, 1),
+    ('Barra fixa', 4, 0, 2),
+    ('Serrote', 4, 25, 2);
 
 INSERT INTO tb_weight_history(value, created_at, exercise_id) VALUES
     (30, '2025-10-07 13:43:45.169', 1),
-    (60, '2025-10-08 13:43:45.169', 2);
+    (60, '2025-10-08 13:43:45.169', 2),
+    (80, '2025-10-08 13:43:45.169', 3),
+    (0, '2025-10-08 13:43:45.169', 4),
+    (25, '2025-10-08 13:43:45.169', 5),
+    (35, '2025-11-07 13:43:45.169', 1),
+    (65, '2025-11-08 13:43:45.169', 2);

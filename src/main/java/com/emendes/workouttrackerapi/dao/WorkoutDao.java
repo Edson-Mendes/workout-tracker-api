@@ -161,4 +161,32 @@ public class WorkoutDao {
         .getSingleResult();
   }
 
+  /**
+   * Deleta Workout.<br>
+   * <br>
+   * Todos os Exercises e WeightHistory relacionados com o Workout informado são deletados.
+   *
+   * @param workout Workout a ser deletado.
+   */
+  @Transactional
+  public void delete(Workout workout) {
+    entityManager.createQuery("""
+            DELETE FROM WeightHistory wh WHERE wh.exercise.workout.id = :workoutId
+            """)
+        .setParameter("workoutId", workout.getId())
+        .executeUpdate();
+
+    entityManager.createQuery("""
+            DELETE FROM Exercise e WHERE e.workout.id = :workoutId
+            """)
+        .setParameter("workoutId", workout.getId())
+        .executeUpdate();
+
+    entityManager.createQuery("""
+            DELETE FROM Workout w WHERE w.id = :workoutId
+            """)
+        .setParameter("workoutId", workout.getId())
+        .executeUpdate();
+  }
+
 }
