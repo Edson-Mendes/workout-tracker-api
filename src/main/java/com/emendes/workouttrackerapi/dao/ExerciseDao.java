@@ -84,4 +84,26 @@ public class ExerciseDao {
     return Optional.ofNullable(exercise);
   }
 
+  /**
+   * Deleta Exercise.<br>
+   * <br>
+   * Todos os WeightHistory relacionados com o Exercise informado serão deletados.
+   *
+   * @param exercise Exercise a ser deletado.
+   */
+  @Transactional
+  public void delete(Exercise exercise) {
+    entityManager.createQuery("""
+            DELETE FROM WeightHistory wh WHERE wh.exercise.id = :exerciseId
+            """)
+        .setParameter("exerciseId", exercise.getId())
+        .executeUpdate();
+
+    entityManager.createQuery("""
+            DELETE FROM Exercise e WHERE e.id = :exerciseId
+            """)
+        .setParameter("exerciseId", exercise.getId())
+        .executeUpdate();
+  }
+
 }

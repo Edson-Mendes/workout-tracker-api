@@ -87,8 +87,7 @@ public class ExerciseService {
    * Atualizar Exercise por exerciseId, workoutId e userId.
    *
    * @param exerciseId              identificador do Exercise a ser atualizado.
-   * @param workoutId               identificador do Workout relacionado com o Exercise.
-   * @param userId                  idenficador do User relacionado com o Workout.
+   * @param workout                 workout ao qual o exercise pertence.
    * @param exerciseRegisterRequest objeto contendo as informações do exercise.
    * @return ExerciseDetailsResponse contendo informações detalhadas do Exercise encontrado.
    */
@@ -103,6 +102,21 @@ public class ExerciseService {
     weightHistoryService.save(exercise);
     log.info("Exercise updated successful");
     return exerciseMapper.toExerciseSummaryResponse(exercise);
+  }
+
+  /**
+   * Deletar Exercise por exerciseId, workoutId e userId.
+   *
+   * @param exerciseId identificador do Exercise a ser deletado.
+   * @param workoutId  identificador do Workout relacionado com o Exercise.
+   * @param userId     idenficador do User relacionado com o Workout.
+   */
+  public void deleteExercise(Long exerciseId, Long workoutId, Long userId) {
+    log.info("Attempt to delete Exercise by exerciseId, workoutId e userId");
+    Exercise exercise = findExerciseBy(exerciseId, workoutId, userId);
+
+    exerciseDao.delete(exercise);
+    log.info("exercise deleted successfully");
   }
 
   /**

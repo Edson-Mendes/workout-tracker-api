@@ -134,4 +134,20 @@ public class WorkoutResource {
         .build();
   }
 
+  /**
+   * Enpoint para deletar Exercise.
+   */
+  @DELETE
+  @Path("/{workoutId}/exercises/{exerciseId}")
+  @RolesAllowed({USER_ROLE_NAME})
+  public Response deleteExercise(
+      @PathParam("workoutId") Long workoutId,
+      @PathParam("exerciseId") Long exerciseId) {
+    workoutService.deleteExercise(workoutId, exerciseId);
+
+    return Response
+        .status(Response.Status.NO_CONTENT)
+        .build();
+  }
+
 }
