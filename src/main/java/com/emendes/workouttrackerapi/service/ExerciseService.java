@@ -120,6 +120,20 @@ public class ExerciseService {
   }
 
   /**
+   * Deletar WeightHistory de um Exercise.
+   *
+   * @param weightHistoryId identificador do WeightHistory a ser deletado.
+   * @param exerciseId      identificador do Exercise.
+   * @param workoutId       identificador do Workout.
+   * @param userId          identificador do User.
+   */
+  public void deleteWeightHistory(Long weightHistoryId, Long exerciseId, Long workoutId, Long userId) {
+    Exercise exercise = findExerciseBy(exerciseId, workoutId, userId);
+
+    weightHistoryService.deleteWeightHistory(exercise, weightHistoryId);
+  }
+
+  /**
    * Busca Exercise na camada DAO por exerciseId, workoutId e userId.
    */
   private Exercise findExerciseBy(Long exerciseId, Long workoutId, Long userId) {

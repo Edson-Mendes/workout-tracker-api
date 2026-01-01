@@ -1,5 +1,6 @@
 package com.emendes.workouttrackerapi.dao;
 
+import com.emendes.workouttrackerapi.model.entity.Exercise;
 import com.emendes.workouttrackerapi.model.entity.WeightHistory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -42,4 +43,24 @@ public class WeightHistoryDao {
         .setParameter("exerciseId", exerciseId)
         .getResultList();
   }
+
+  /**
+   * Deleta WeightHistory por id.
+   *
+   * @param exercise        Exercise que contém o WeightHistory a ser deletado.
+   * @param weightHistoryId identificador do WeightHistory a ser deletado.
+   * @return número de entidades deletadas.
+   */
+  @Transactional
+  public int delete(Exercise exercise, Long weightHistoryId) {
+    return entityManager.createQuery("""
+            DELETE FROM WeightHistory wh
+              WHERE wh.exercise.id = :exerciseId
+              AND wh.id = :weightHistoryId
+            """)
+        .setParameter("exerciseId", exercise.getId())
+        .setParameter("weightHistoryId", weightHistoryId)
+        .executeUpdate();
+  }
+
 }

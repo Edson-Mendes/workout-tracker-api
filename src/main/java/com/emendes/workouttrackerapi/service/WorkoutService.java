@@ -187,8 +187,25 @@ public class WorkoutService {
     Long userId = currentUserComponent.getCurrentUser().getId();
 
     exerciseService.deleteExercise(exerciseId, workoutId, userId);
-
     log.info("Exercise deleted successfully");
+  }
+
+  /**
+   * Deletar WeightHistory por id.
+   *
+   * @param workoutId       identificador do Workout.
+   * @param exerciseId      identificador do Exercise.
+   * @param weightHistoryId identificador do WeightHistory a ser deletado.
+   */
+  public void deleteWeightHistory(Long workoutId, Long exerciseId, Long weightHistoryId) {
+    log.info("Attempt to delete WeightHistory por id");
+    checkWorkoutId(workoutId);
+    checkExerciseId(exerciseId);
+    checkWeightHistoryId(weightHistoryId);
+    Long userId = currentUserComponent.getCurrentUser().getId();
+
+    exerciseService.deleteWeightHistory(weightHistoryId, exerciseId, workoutId, userId);
+    log.info("WeightHistory deleted successfully");
   }
 
   /**
@@ -295,6 +312,17 @@ public class WorkoutService {
   private void checkExerciseId(Long exerciseId) {
     if (exerciseId == null)
       throw new WebApplicationException("exerciseId must not be null", Status.INTERNAL_SERVER_ERROR);
+  }
+
+  /**
+   * Verifica se o weightHistoryId informado é nulo.
+   *
+   * @param weightHistoryId identificador do workout.
+   * @throws WebApplicationException caso weightHistoryId seja nulo.
+   */
+  private void checkWeightHistoryId(Long weightHistoryId) {
+    if (weightHistoryId == null)
+      throw new WebApplicationException("weightHistoryId must not be null", Status.INTERNAL_SERVER_ERROR);
   }
 
 }
