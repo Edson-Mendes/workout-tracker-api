@@ -175,6 +175,23 @@ public class WorkoutService {
   }
 
   /**
+   * Deletar Exercise por id.
+   *
+   * @param workoutId  identificador do Workout relacionado com o Exercise a ser deleteado.
+   * @param exerciseId identificador do Exercise a ser deletado.
+   */
+  public void deleteExercise(Long workoutId, Long exerciseId) {
+    log.info("Attempt to delete Exercise by workoutId e exerciseId");
+    checkWorkoutId(workoutId);
+    checkExerciseId(exerciseId);
+    Long userId = currentUserComponent.getCurrentUser().getId();
+
+    exerciseService.deleteExercise(exerciseId, workoutId, userId);
+
+    log.info("Exercise deleted successfully");
+  }
+
+  /**
    * Busca workout por id e userId.
    *
    * @param workoutId identificador do Workout a ser buscado.

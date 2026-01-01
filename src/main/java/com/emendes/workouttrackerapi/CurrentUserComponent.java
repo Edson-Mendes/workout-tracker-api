@@ -8,6 +8,9 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 
+/**
+ * Componente responsável por lidar com o usuário logado.
+ */
 @ApplicationScoped
 @AllArgsConstructor(onConstructor_ = @Inject)
 public class CurrentUserComponent {
