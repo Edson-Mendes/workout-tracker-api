@@ -150,4 +150,21 @@ public class WorkoutResource {
         .build();
   }
 
+  /**
+   * Enpoint para deletar Exercise.
+   */
+  @DELETE
+  @Path("/{workoutId}/exercises/{exerciseId}/weight-histories/{weightHistoryId}")
+  @RolesAllowed({USER_ROLE_NAME})
+  public Response deleteWeightHistory(
+      @PathParam("workoutId") Long workoutId,
+      @PathParam("exerciseId") Long exerciseId,
+      @PathParam("weightHistoryId") Long weightHistoryId) {
+    workoutService.deleteWeightHistory(workoutId, exerciseId, weightHistoryId);
+
+    return Response
+        .status(Response.Status.NO_CONTENT)
+        .build();
+  }
+
 }

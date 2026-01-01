@@ -34,6 +34,12 @@ public class WeightHistoryService {
     log.info("WeightHistory save successful");
   }
 
+  /**
+   * Busca todos os WeightHistory para um dado exerciseId.
+   *
+   * @param exerciseId identificador do Exercise que contém os WeightHistory.
+   * @return {@code List<WeightHistoryResponse>} lista dos WeightHistoryResponse encontrados.
+   */
   public List<WeightHistoryResponse> fetchWeightHistoryByExerciseId(Long exerciseId) {
     log.info("Attempt to fetch WeightHistory by exerciseId");
     if (exerciseId == null)
@@ -44,4 +50,17 @@ public class WeightHistoryService {
         .map(weightHistoryMapper::toWeightHistoryResponse)
         .toList();
   }
+
+  /**
+   * Deletar WeightHistory por ID de um Exercise.
+   *
+   * @param exercise        Exercise que contém o WeightHistory.
+   * @param weightHistoryId identificador do WeightHistory a ser deletado.
+   */
+  public void deleteWeightHistory(Exercise exercise, Long weightHistoryId) {
+    int totalEntitiesDeleted = weightHistoryDao.delete(exercise, weightHistoryId);
+    if (totalEntitiesDeleted == 0)
+      throw new WebApplicationException("WeightHistory not found", Response.Status.NOT_FOUND);
+  }
+
 }
